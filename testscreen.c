@@ -35,8 +35,10 @@
 	getchar();
 	FILE *fp = fopen("test.wav", "r");	// open the wav file in read-only
 	WAVheader h = readwavhdr(fp);
-	fclose(fp);
 	displaywavhdr(h);
+	wavdata(h, fp); // to calculate dB values and display them as a barchart
+	fclose(fp);
+}
 /*
 	setfgcolor(MAGENTA);
     gotoXY(14,35);
@@ -50,4 +52,4 @@
 	printf("This text is displayed in default color\n");
 	getchar();
 */
-}
+
