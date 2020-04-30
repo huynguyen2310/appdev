@@ -1,4 +1,4 @@
-#define URL "http://www.cc.puv.fi/~gc/php/puttysize.php"
+#define URL "http://www.cc.puv.fi/~e1900310/php/sound.php"
 
 //function declaration
-void sendpost(char *, char *);
+void senddata(char *, char *);

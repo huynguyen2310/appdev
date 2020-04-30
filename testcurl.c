@@ -12,7 +12,7 @@ int main(void){
 
 	if(curl){
 		curl_easy_setopt(curl, CURLOPT_URL, URL);
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "name=ngoc&ID=e1900322");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "name=huy&ID=e1900310");
 		res=curl_easy_perform(curl);
 		if(res != CURLE_OK)
 			fprintf(stderr, "curl_easy_perform() failed: %s\n",

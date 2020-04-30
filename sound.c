@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
-#include "sound.h"
+#include "comm.h"
 #include "screen.h"
+#include "sound.h"
 // fuction definitions
 WAVheader readwavhdr(FILE *fp){
 	WAVheader myh;
@@ -31,6 +32,7 @@ void wavdata(WAVheader h, FILE *fp){
 	// 5*16000 = 80000 samples, we want to display them into 160 bars
 	short samples[500]; 	// to read 500 samples from WAV file
 	int peaks=0, flag=0; 	// 1st value is to count, 2nd value to show that you are in a peak
+	double max=0;
 	for(int i=0; i<160; i++){
 		fread(samples, sizeof(samples), 1, fp);
 		double sum = 0.0;	//accumulate the sum
@@ -38,31 +40,36 @@ void wavdata(WAVheader h, FILE *fp){
 			sum = sum + samples[j]*samples[j];
 		}
 		double re = sqrt(sum/500);
+		double result=20*log10(re);
 #ifdef SDEBUG
-		printf("db[%d] = %f\n", i+1, 20*log10(re));
+		printf("db[%d] = %f\n", i+1, result);	//print the value in DEBUG mode
 #else
 		//displaybar for re value		
-	if(20*log10(re)>60){
-		setfgcolor(RED);
-		if(flag == 0){
-			flag = 1;
+	if(result > max) max = result;
+	if(result > 60){
+		if(flag ==0){
+			flag=1;
 			peaks++;
 		}
+		setfgcolor(RED);
 	}
-	else{ 
-		setfgcolor(WHITE);
-		flag = 0;
-	}	
-	drawbar(i+1, (int)20*log10(re)/3);
+	else{
+		flag=0;
+	}
+	drawbar(i+1, (int)result/3);
+	resetcolors();
 #endif
 	}
+	char sounddata[100];	//send data to the PHP program sound.php
+	sprintf(sounddata, "peaks=%d&max=%f", peaks, max);
+	senddata(sounddata, URL);
 	// display sample rate, duration, no. of peak on top od the screen
 	gotoXY(1,1);
 	printf("Sample Rate: %d\n", h.sampleRate);
-	gotoXY(1,75);
 	printf("Duration: %f s\n", (float)h.subchunk2size/h.byteRate);
-	gotoXY(1,150);
 	printf("Peaks: %d\n", peaks);
+	printf("Maximum decibel value: %.2f decibels\n", max);
 }
+
 
 // end of file

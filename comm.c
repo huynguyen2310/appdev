@@ -2,7 +2,7 @@
 #include <i386-linux-gnu/curl/curl.h>
 #include "comm.h"
 
-void sendpost(char *url, char *post){
+void senddata(char *postdata, char *url){
 	CURL *curl;
 	CURLcode res;
 
@@ -11,10 +11,10 @@ void sendpost(char *url, char *post){
 	curl = curl_easy_init();
 	if(curl){
 		curl_easy_setopt(curl, CURLOPT_URL, url);
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata);
 		res = curl_easy_perform(curl);
 		if(res != CURLE_OK){
-			fprintf(stderr, "curl_easy_perform() failed: %s\n",
+			fprintf(stderr, "curl_easy_perform() failed: %s",
 					curl_easy_strerror(res));
 		}
 		curl_easy_cleanup(curl);
